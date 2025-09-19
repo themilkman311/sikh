@@ -5,8 +5,8 @@ A stdin key-hooking utility in less than 100 LOC. It reads the raw input from a 
 Module: `github.com/themilkman311/sikh`
 
 ```
-(hook *InputHook) Start(handler func(string)) <-chan struct{}
-(hook *InputHook) Stop()
+(sikh *Sikh) Start(handler func(string)) <-chan struct{}
+(sikh *Sikh) Halt()
 ```
 
 Example
