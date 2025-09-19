@@ -38,3 +38,7 @@ func main() {
 	<-done
 }
 ```
+
+Notes and design
+
+- If you don't include some logic to call Halt(), you will have to kill the process yourself.
