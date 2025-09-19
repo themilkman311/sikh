@@ -1,7 +1,6 @@
-package main
+package sikh
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"sync/atomic"
@@ -70,18 +69,4 @@ func (sikh *Sikh) getKeystroke() ([4]byte, error) {
 func (sikh *Sikh) toString(rep [4]byte) (string, bool) {
 	job, ok := keymaps.StandardMap[rep]
 	return job, ok
-}
-
-func main() {
-	var sikh Sikh
-
-	done := sikh.Start(func(s string) {
-		switch s {
-		case "[Ctrl+c]":
-			sikh.Halt()
-		default:
-			fmt.Println(s)
-		}
-	})
-	<-done
 }
