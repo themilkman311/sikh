@@ -43,7 +43,7 @@ func (sikh *Sikh) Start(handler func(string)) <-chan struct{} {
 	return done
 }
 
-func (sikh *Sikh) Stop() {
+func (sikh *Sikh) Halt() {
 	sikh.isRunning.Store(false)
 }
 
@@ -78,7 +78,7 @@ func main() {
 	done := sikh.Start(func(s string) {
 		switch s {
 		case "[Ctrl+c]":
-			sikh.Stop()
+			sikh.Halt()
 		default:
 			fmt.Println(s)
 		}

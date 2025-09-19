@@ -21,13 +21,13 @@ import (
 
 func main() {
     // create the hook
-	var hook InputHook
+	var sikh Sikh
 
     // switch over the string and implement logic
-	done := hook.Start(func(s string) {
+	done := sikh.Start(func(s string) {
 		switch s {
 		case "[Ctrl+c]":
-			hook.Stop() // do not forget this
+			sikh.Stop() // do not forget this
 		default:
 			fmt.Println(s)
 		}
