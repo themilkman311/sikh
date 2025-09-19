@@ -28,6 +28,8 @@ func main() {
 		switch s {
 		case "[Ctrl+c]":
 			sikh.Stop() // do not forget this
+		case "[Esc]":
+			fmt.Println("Trying to escape? Try ctrl+c")
 		default:
 			fmt.Println(s)
 		}
