@@ -1,6 +1,6 @@
 # Sikh
 
-A stdin key-hooking library in less than 100 LOC. It reads the raw input from a keypress, compares it against a map, and returns a string coresponding with the key pressed.
+A small stdin key-hooking library. It reads the raw input from a keypress, compares it against a map, and returns a string coresponding with the key pressed.
 
 Module: `github.com/themilkman311/sikh`
 
