@@ -2,7 +2,7 @@
 
 A small stdin key-hooking library. It reads the raw input from a keypress, compares it against a map, and returns a string coresponding with the key pressed.
 
-Module: `github.com/themilkman311/sikh`
+Module: `github.com/kyleraywed/sikh`
 
 ```
 (sikh *Sikh) Start(handler func(string)) <-chan struct{}
@@ -16,7 +16,7 @@ package main
 
 import (
     "fmt"
-    "github.com/themilkman311/sikh"
+    "github.com/kyleraywed/sikh"
 )
 
 func main() {
