@@ -5,7 +5,7 @@ import (
 	"os"
 	"sync/atomic"
 
-	"github.com/themilkman311/sikh/keymaps"
+	"github.com/kyleraywed/sikh/keymaps"
 	"golang.org/x/term"
 )
 
