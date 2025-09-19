@@ -1,78 +1,87 @@
-package sikh
+package main
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"sync"
+	"sync/atomic"
 
 	"github.com/themilkman311/sikh/keymaps"
 	"golang.org/x/term"
 )
 
-type InputHook struct {
-	representation [4]byte
-	running        bool
-	runningMutex   sync.Mutex // don't touch
+type Sikh struct {
+	isRunning atomic.Bool
 }
 
-func (hook *InputHook) Start(handler func(string)) <-chan struct{} {
+func (sikh *Sikh) Start(handler func(string)) <-chan struct{} {
 	done := make(chan struct{})
 
-	if hook.running {
+	if sikh.isRunning.Load() {
 		return nil
 	}
 
-	hook.runningMutex.Lock() // I know this data race can never happen.
-	hook.running = true      // The future may change that.
-	hook.runningMutex.Unlock()
+	sikh.isRunning.Store(true)
 
 	go func() {
 		defer close(done)
 		for {
-			if !hook.running {
-				break
+			if !sikh.isRunning.Load() {
+				return
 			}
 
-			if err := hook.getKeystroke(); err != nil {
-				log.Fatal(err)
-			}
-
-			job, err := hook.string()
+			rep, err := sikh.getKeystroke()
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal(err) // i know
 			}
-			handler(job)
+
+			if job, ok := sikh.toString(rep); ok {
+				handler(job)
+			}
 		}
 	}()
 	return done
 }
 
-func (hook *InputHook) Stop() {
-	hook.runningMutex.Lock()
-	hook.running = false
-	hook.runningMutex.Unlock()
+func (sikh *Sikh) Stop() {
+	sikh.isRunning.Store(false)
 }
 
-func (hook *InputHook) getKeystroke() error {
-	// For whatever reason, putting and leaving the term in raw mode during operation
-	// causes issues with keypresses; so much so that at the cost of very little
-	// performance (thank goodness), I've chosen to just go in and out with every keypress.
+func (sikh *Sikh) getKeystroke() ([4]byte, error) {
+	var rep [4]byte
+
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
-		return err
+		return rep, err
 	}
 	defer term.Restore(int(os.Stdin.Fd()), oldState)
 
 	b := make([]byte, 4)
 	_, err = os.Stdin.Read(b)
+
 	if err != nil {
-		return err
+		return rep, err
 	}
 
-	copy(hook.representation[:], b[:4])
-	return nil
+	copy(rep[:], b[:4])
+	return rep, nil
 }
 
-func (hook *InputHook) string() (string, error) {
-	return keymaps.StandardMap[hook.representation], nil
+func (sikh *Sikh) toString(rep [4]byte) (string, bool) {
+	job, ok := keymaps.StandardMap[rep]
+	return job, ok
+}
+
+func main() {
+	var sikh Sikh
+
+	done := sikh.Start(func(s string) {
+		switch s {
+		case "[Ctrl+c]":
+			sikh.Stop()
+		default:
+			fmt.Println(s)
+		}
+	})
+	<-done
 }
