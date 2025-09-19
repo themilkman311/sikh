@@ -1,4 +1,4 @@
-module github.com/themilkman311/sikh
+module github.com/kyleraywed/sikh
 
 go 1.25.1
 
