@@ -13,33 +13,28 @@ type Sikh struct {
 	isRunning atomic.Bool
 }
 
-func (sikh *Sikh) Start(handler func(string)) <-chan struct{} {
-	done := make(chan struct{})
-
+func (sikh *Sikh) Start(handler func(string)) {
 	if sikh.isRunning.Load() {
-		return nil
+		return
 	}
 
 	sikh.isRunning.Store(true)
+	defer sikh.isRunning.Store(false)
 
-	go func() {
-		defer close(done)
-		for {
-			if !sikh.isRunning.Load() {
-				return
-			}
-
-			rep, err := sikh.getKeystroke()
-			if err != nil {
-				log.Fatal(err) // i know
-			}
-
-			if job, ok := sikh.toString(rep); ok {
-				handler(job)
-			}
+	for {
+		if !sikh.isRunning.Load() {
+			return
 		}
-	}()
-	return done
+
+		rep, err := sikh.getKeystroke()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if job, ok := sikh.toString(rep); ok {
+			handler(job)
+		}
+	}
 }
 
 func (sikh *Sikh) Halt() {
