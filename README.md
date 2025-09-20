@@ -5,7 +5,7 @@ A small **s**td**i**n **k**ey-**h**ooking library. It reads the raw input from a
 Module: `github.com/kyleraywed/sikh`
 
 ```
-(sikh *Sikh) Start(handler func(string)) <-chan struct{}
+(sikh *Sikh) Start(handler func(string))
 (sikh *Sikh) Halt()
 ```
 
@@ -24,7 +24,7 @@ func main() {
 	var sikh Sikh
 
     // switch over the string and implement logic
-	done := sikh.Start(func(s string) {
+	sikh.Start(func(s string) {
 		switch s {
 		case "[Ctrl+c]":
 			sikh.Halt() // do not forget this
@@ -34,11 +34,9 @@ func main() {
 			fmt.Println(s)
 		}
 	})
-
-	<-done
 }
 ```
 
 Notes and design
 
-- If you don't include some logic to call Halt(), you will have to kill the process yourself.
+- Start blocks until Halt() is called; if you don't include some logic to call Halt(), you will have to kill the process yourself.
