@@ -21,7 +21,7 @@ import (
 
 func main() {
     // create the hook
-	var sikh Sikh
+	var sikh sikh.Sikh
 
     // switch over the string and implement logic
 	sikh.Start(func(s string) {
