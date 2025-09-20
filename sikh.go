@@ -28,7 +28,7 @@ func (sikh *Sikh) Start(handler func(string)) {
 
 		rep, err := sikh.getKeystroke()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		if job, ok := sikh.toString(rep); ok {
